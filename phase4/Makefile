@@ -2,7 +2,7 @@ TARGET ?= aarch64-none-elf
 CROSS ?= $(TARGET)
 
 CC := $(CROSS)-gcc
-XARGO := CARGO_INCREMENTAL=0 RUST_TARGET_PATH="$(shell pwd)" xargo
+CARGO := cargo -Z build-std=core,alloc
 
 LD_LAYOUT := ext/layout.ld
 
@@ -11,7 +11,7 @@ RUST_BUILD_DIR := target/$(TARGET)
 RUST_DEBUG_LIB := $(RUST_BUILD_DIR)/debug/lib$(RUST_BINARY).a
 RUST_RELEASE_LIB := $(RUST_BUILD_DIR)/release/lib$(RUST_BINARY).a
 
-RUST_DEPS = Xargo.toml Cargo.toml build.rs $(LD_LAYOUT) src/*
+RUST_DEPS = Cargo.toml build.rs $(LD_LAYOUT) src/*
 EXT_DEPS = $(BUILD_DIR)/crt0.o
 
 BUILD_DIR := build
@@ -25,15 +25,15 @@ VPATH = ext
 all: $(KERNEL).hex $(KERNEL).bin
 
 check:
-	@$(XARGO) check --target=$(TARGET)
+	@cargo check --target=$(TARGET)
 
 $(RUST_DEBUG_LIB): $(RUST_DEPS)
 	@echo "+ Building $@ [xargo]"
-	@$(XARGO) build --target=$(TARGET)
+	@${CARGO} build --target=$(TARGET).json
 
 $(RUST_RELEASE_LIB): $(RUST_DEPS)
-	@echo "+ Building $@ [xargo --release]"
-	@$(XARGO) build --release --target=$(TARGET)
+	@echo "+ Building $@ [build --release]"
+	@${CARGO} build --release --target=$(TARGET).json
 
 ifeq ($(DEBUG),1)
 $(RUST_LIB): $(RUST_DEBUG_LIB) | $(BUILD_DIR)
@@ -67,5 +67,5 @@ $(KERNEL).bin: $(KERNEL).elf | $(BUILD_DIR)
 	@$(CROSS)-objcopy $< -O binary $@
 
 clean:
-	$(XARGO) clean
+	cargo clean
 	rm -rf $(BUILD_DIR)

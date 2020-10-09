@@ -1,6 +1,11 @@
-#[lang = "eh_personality"] pub extern fn eh_personality() {}
+use core::panic::PanicInfo;
 
-#[lang = "panic_fmt"] #[no_mangle] pub extern fn panic_fmt() -> ! { loop{} }
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    loop {}
+}
+
+#[lang = "eh_personality"] pub extern fn eh_personality() {}
 
 #[no_mangle]
 pub unsafe extern fn memcpy(dest: *mut u8, src: *const u8,
