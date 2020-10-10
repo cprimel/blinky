@@ -25,7 +25,7 @@ I have updated the provided code for ```phase4``` to successfully cross-compile 
 [```xargo```](https://github.com/japaric/xargo) which has been in maintenance mode since 2017.
 It was succeeded by [```cargo-xbuild```](https://github.com/rust-osdev/cargo-xbuild), a fork of
 ```xargo```, whose features have been incorporated into Cargo as
-[the ```build-std``` feature](https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std). You will also have to make some minor changes 
+[the ```build-std``` feature](https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std). Mostly, just flip out one for the other and the compiler errors will lead you to the rest of it! You will also have to make some minor changes 
 to the provided code for the current build of Rust. Check out my changes to ```makefile```, ```panic_handler``` in ```lang_items.rs```,
 and feature flags in ```lib.rs```.
 
